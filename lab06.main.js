@@ -117,8 +117,8 @@ class ServiceNowAdapter extends EventEmitter {
                  * healthcheck(), execute it passing the error seen as an argument
                  * for the callback's errorMessage parameter.
                  */
-
-                console.error(this.id + ` System healthcheck ## 2, Error - ${JSON.stringify(error)}`);
+                 
+                 console.error(this.id + ` System healthcheck ## 2, Error - ${JSON.stringify(error)}`);
                 callbackError = error;
                 this.emitOffline();
             } else {
@@ -132,7 +132,7 @@ class ServiceNowAdapter extends EventEmitter {
                  * parameter as an argument for the callback function's
                  * responseData parameter.
                  */
-                console.error(this.id + ` System healthcheck ## 3, Result - ${JSON.stringify(result)}`);
+                 console.error(this.id + ` System healthcheck ## 3, Result - ${JSON.stringify(result)}`);
                 callbackData = result;
                 this.emitOnline();
             }
@@ -195,24 +195,7 @@ class ServiceNowAdapter extends EventEmitter {
         this.connector.get((data, error) => {
             if (error)
                 callback(null, error);
-
-            let body = {};
-            let newObj = [];
-            if (JSON.parse(data.body)) {
-                body = JSON.parse(data.body).result;
-                for (let b of body) {
-                    newObj.push({
-                        change_ticket_number: b.number,
-                        active: b.active,
-                        priority: b.priority,
-                        description: b.description,
-                        work_start: b.work_start,
-                        work_end: b.work_end,
-                        change_ticket_key: b.sys_id
-                    });
-                }
-            }
-            callback(newObj);
+            callback(data);
         });
     }
 
@@ -235,22 +218,7 @@ class ServiceNowAdapter extends EventEmitter {
         this.connector.post((data, error) => {
             if (error)
                 callback(null, error);
-
-            let body = {};
-            let newObj = {};
-            if (JSON.parse(data.body)) {
-                body = JSON.parse(data.body).result;
-                newObj = {
-                    change_ticket_number: body.number,
-                    active: body.active,
-                    priority: body.priority,
-                    description: body.description,
-                    work_start: body.work_start,
-                    work_end: body.work_end,
-                    change_ticket_key: body.sys_id
-                };
-            }
-            callback(newObj);
+            callback(data);
         });
     }
 }
