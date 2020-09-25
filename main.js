@@ -94,6 +94,7 @@ class ServiceNowAdapter extends EventEmitter {
    *   that handles the response.
    */
     healthcheck(callback) {
+        console.log("System healthcheck ## 0");
         this.getRecord((result, error) => {
             /**
              * For this lab, complete the if else conditional
@@ -101,6 +102,8 @@ class ServiceNowAdapter extends EventEmitter {
              * or the instance was hibernating. You must write
              * the blocks for each branch.
              */
+            let callbackData = null;
+            let callbackError = null;
             if (error) {
                 /**
                  * Write this block.
@@ -114,10 +117,10 @@ class ServiceNowAdapter extends EventEmitter {
                  * healthcheck(), execute it passing the error seen as an argument
                  * for the callback's errorMessage parameter.
                  */
-                 this.emitOffline();
-                 log.error("System healthcheck successful- Adapter ID:", this.id);
-                 if(callback)
-                    callback(null, error);
+                 
+                 console.error(this.id + ` System healthcheck ## 2, Error - ${JSON.stringify(error)}`);
+                callbackError = error;
+                this.emitOffline();
             } else {
                 /**
                  * Write this block.
@@ -129,10 +132,9 @@ class ServiceNowAdapter extends EventEmitter {
                  * parameter as an argument for the callback function's
                  * responseData parameter.
                  */
-                 this.emitOnline();
-                 log.debug("System healthcheck successful- Adapter ID:", this.id);
-                 if(callback)
-                    callback(result);
+                 console.error(this.id + ` System healthcheck ## 3, Result - ${JSON.stringify(result)}`);
+                callbackData = result;
+                this.emitOnline();
             }
         });
     }
@@ -192,8 +194,8 @@ class ServiceNowAdapter extends EventEmitter {
          */
         this.connector.get((data, error) => {
             if (error)
-                console.error(error);
-            console.log(JSON.stringify(data));
+                callback(null, error);
+            callback(data);
         });
     }
 
@@ -215,8 +217,8 @@ class ServiceNowAdapter extends EventEmitter {
          */
         this.connector.post((data, error) => {
             if (error)
-                console.error(error);
-            console.log(JSON.stringify(data));
+                callback(null, error);
+            callback(data);
         });
     }
 }
